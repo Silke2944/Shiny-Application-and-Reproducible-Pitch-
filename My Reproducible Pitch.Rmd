@@ -1,0 +1,29 @@
+---
+title: "My Reproducible Pitch"
+author: "Silke"
+date: "2023-04-14"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Dataset mtcars
+
+Prediction of displacement given the miles per gallon. 
+
+```{r}
+head(mtcars)
+```
+
+
+## ui.R and server.R
+
+The code of the application can be found in my github repository: https://github.com/Silke2944/Shiny-Application-and-Reproducible-Pitch- 
+
+## Plot of the prediction model 
+
+![](AppWeek4.png) 
+
+
