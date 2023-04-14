@@ -1,0 +1,84 @@
+---
+title: "My Shiny Application"
+author: "Silke"
+date: "2023-04-14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Prediction of displacement (dis) given the miles/gallon (mpg). 
+
+
+```{r cars}
+head(mtcars)
+summary(mtcars)
+```
+## ui.R and server.R
+The following code is written in the ui.R and server.R files included with this document. 
+
+### Reactive app
+```{r, echo=FALSE}
+library(webshot)
+appshot("AppWeek4", "AppWeek4.png")
+```
+
+#### ui.R
+```r
+library(shiny)
+shinyUI(fluidPage(
+        titlePanel("Predict Displacement from MPG"),
+        sidebarLayout(
+                sidebarPanel(
+                        sliderInput("sliderMPG", "What is the MPG of the car?", 10, 35, value = 20),
+                        checkboxInput("showModel", "Show/Hide Model", value = TRUE),
+                ), 
+                mainPanel(
+                        plotOutput("plot"),
+                        h3("Predicted Displacement from Model:"),
+                        textOutput("pred"),
+                )
+        )
+))
+```
+
+#### server.R
+```r
+library(shiny)
+shinyServer(function(input, output) {
+        model <- lm(disp ~ mpg, data = mtcars)
+
+        
+        modelpred <- reactive({
+                mpgInput <- input$sliderMPG
+                predict(model, newdata = data.frame(mpg = mpgInput))
+        })
+        
+        output$plot <- renderPlot({
+                mpgInput <- input$sliderMPG
+                
+                plot(mtcars$mpg, mtcars$disp, xlab = "Miles Per Gallon", 
+                     ylab = "Displacement", bty = "n", pch = 16,
+                     xlim = c(10, 35), ylim = c(50, 350))
+                if(input$showModel){
+                        abline(model, col = "pink", lwd = 2)
+                }
+                legend(25, 250, c("Prediction"), pch = 16, 
+                       col = c("pink"), bty = "n", cex = 1.2)
+                points(mpgInput, modelpred(), col = "pink", pch = 16, cex = 2)
+        })
+        
+        output$pred <- renderText({
+                modelpred()
+        })
+        
+})
+```
+
+### Screenshot of the application. 
+The plot shows the relationship between the miles/gallon and the displacement in the mtcars dataset. 
+
+![](AppWeek4.png)
+
